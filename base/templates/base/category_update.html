@@ -1,0 +1,74 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load form_filters %}
+
+{% block body_class %}category-update-body{% endblock %}
+
+{% block content %}
+<div class="category-update-main-container">
+    <h1 class="category-update-title">Category Update</h1>
+    <div class="category-update-row">
+        <div class="category-update-column">
+            <h2 class="category-update-subtitle">Existing Categories</h2>
+            <div class="category-list-container">
+                <div class="scrollable-category-list">
+                    {% for category in categories %}
+                    <div class="category-item">
+                       
+                        {% if category.disabled == False %}
+                            <span class="category-name">{{category}} </span>
+                            <a href="{% url 'disable-category' category.id %}"><button class="delete-button">Disable</button></a>
+                        {% else %}
+                            <span class="category-name" style="color:rgb(253, 172, 158)">{{category}} </span>
+                            <a href="{% url 'enable-category' category.id %}"><button class="delete-button" style="color:rgb(253, 172, 158)">Enable</button></a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="category-update-column">
+            <h2 class="category-update-subtitle">Add New Category</h2>
+            <div class="category-form-container">
+                <form method = "POST" id="categoryForm" class="category-form">
+                    {% csrf_token %}
+                    {{form.name}}
+                    {{form.abbreviation}}
+                    <input type="submit" value="Submit" class="category-submit-button">
+                </form>
+                <p class="message" style="color:rgb(229, 231, 248)"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('categoryForm');
+        const abbreviationField = document.querySelector('input[name="abbreviation"]');
+        const message = document.getElementsByClassName('message')[0];
+
+        // Clear error message initially
+        message.textContent = '';
+
+        // Validate abbreviation on input
+        abbreviationField.addEventListener('input', () => {
+            if (abbreviationField.value.trim().length !== 3) {
+                message.textContent = 'Abbreviation must be exactly 3 characters.';
+            } else {
+                message.textContent = '';
+            }
+        });
+
+        // Validate on form submission
+        form.addEventListener('submit', (event) => {
+            if (abbreviationField.value.trim().length !== 3) {
+                event.preventDefault(); // Stop form submission
+                message.textContent = 'Abbreviation must be exactly 3 characters.';
+            }
+        });
+    });
+</script>
+{% endblock content %}

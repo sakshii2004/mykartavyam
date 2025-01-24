@@ -1,0 +1,69 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}view-complaint-body{% endblock %}
+
+{% block content %}
+
+<main role="main" class="view-main">
+    <div class="view-complaint-details">
+        <h3 class="view-complaint-id">Reference ID: {{complaint.reference_id}}</h3>
+        <h1 class="view-complaint-title">{{complaint.title}}</h1>        
+        <p><b>Created On: </b><span class="view-complaint-field">{{complaint.created|date:"F j, Y, g:i a"}}</span></p>
+        <p><b>Category: </b><span class="view-complaint-field">{{complaint.category}}</span></p>
+        <p><b>Status: </b><span class="view-complaint-field">{{complaint.status}}</span></p>
+        {% if user.is_authenticated %}
+            <p><b>Posted By: </b><span class="view-complaint-field"><a style="text-decoration: None; color:#4c7e9d" href="{% url 'profile' complaint.citizen.id %}">{{complaint.citizen.name}}</a></span></p>
+        {% else %}
+            <p><b>Posted By: </b><span class="view-complaint-field">A Concerned Citizen</span></p>
+        {% endif %}
+        <p><b>Problem Description: </b></p>
+        <p class="view-complaint-desc">{{complaint.description}}</p>
+        <p><b>Location: </b><span class="view-complaint-field">{{complaint.district}}, {{complaint.state}}</span>
+            <a href="https://www.google.com/maps?q={{ complaint.latitude }},{{ complaint.longitude }}" target="_blank" class="view-complaint-map-link">
+                View on Google Maps
+            </a>
+        </p>
+        {% if complaint.reopened %}
+        <p><b>Last Reopened: </b><span view-complaint-field>{{complaint.reopened|date:"F j, Y, g:i a"}}</span></p>
+        {% endif %}
+
+        {% if request.user.groups.all.0.name == 'admin' or request.user.groups.all.0.name == 'moderator' %}
+            {% if complaint.get_status_display == 'AWAITING APPROVAL' %}
+                <a href="{% url 'approve-complaint' complaint.id %}"><button class="approve-back-link">Approve Complaint</button></a>
+            {% endif %}
+        {% endif %}
+
+        {% if request.user.groups.all.0.name == 'admin' or request.user.groups.all.0.name == 'moderator' %}
+            {% if complaint.get_status_display == 'OPEN' or complaint.get_status_display == 'REOPENED' %}
+                <a href="{% url 'force-close-complaint' complaint.id %}"><button class="approve-back-link">Force Close Complaint</button></a>
+            {% endif %}
+        {% endif %}
+
+        {% if creator == 'Yes' and complaint.get_status_display == 'AUTO CLOSED' %}
+            <a href="{% url 're-open' complaint.id %}"><button class="approve-back-link">Reopen</button></a>
+        {% endif %}
+        
+        {% if creator == 'Yes' and complaint.get_status_display != 'RESOLVED' %}
+            <a href="{% url 'mark-resolved' complaint.id %}"><button class="approve-back-link">Mark Resolved</button></a>
+        {% endif %}
+
+        {% if complaint.citizen == request.user %}
+            <a href="{% url 'delete-complaint' complaint.id %}"><button class="approve-back-link">Delete Complaint</button></a>
+        {% elif is_admin or is_moderator %}
+            {% if complaint.get_status_display == 'AWAITING APPROVAL' %}
+                <a href="{% url 'delete-complaint' complaint.id %}"><button class="approve-back-link">Reject Complaint</button></a>
+            {% else %}
+                <a href="{% url 'delete-complaint' complaint.id %}"><button class="approve-back-link">Delete Complaint</button></a>
+            {% endif %}
+        {% endif %}
+
+    </div>
+    {% if complaint.image %}
+    <img src="{{ complaint.image.url }}" alt="{{ complaint.title }}" class="view-complaint-image">
+    {% endif %}
+</main>
+
+
+{% endblock content %}

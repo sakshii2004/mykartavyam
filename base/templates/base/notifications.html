@@ -1,0 +1,57 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}{% endblock %}
+
+{% block content %}
+<div class="complaint-approval-container">
+    <h1 class="page-heading">Notifications</h1>
+
+    <div class="complaints-list" style="margin: 0 2.5em;">
+        {% for notification in notifications %}
+            {% if notification.action == 'APPROVED_BY_MOD' or notification.action == 'APPROVED_BY_AI' %}
+                    <div class="complaint-box" style="background-color:#ebf6fd">
+                        <div class="complaint-title">
+                            <h4 style="text-decoration: none;">COMPLAINT APPROVED — {{ notification.title }} [{{notification.reference_id}}]</h4>
+                        </div>
+                        <div class="complaint-time">Approved {{ notification.created|timesince }} ago</div>
+                    </div>
+            {% elif notification.action == 'REJECTED' %}    
+                <div class="complaint-box" style="background-color:#fdf5ea;">
+                    <div class="complaint-title">
+                        <h4 style="text-decoration: none;">COMPLAINT REJECTED — {{ notification.title }} [{{notification.reference_id}}]</h4>
+                    </div>
+                    <div class="complaint-time">Rejected {{ notification.created|timesince }} ago</div>
+                </div>
+            {% elif notification.action == 'DELETED' %}
+                <div class="complaint-box" style="background-color:#fdecea;">
+                    <div class="complaint-title">
+                        <h4 style="text-decoration: none;">COMPLAINT DELETED — {{ notification.title }} [{{notification.reference_id}}]</h4>
+                    </div>
+                    <div class="complaint-time">Deleted {{ notification.created|timesince }} ago</div>
+                </div>
+
+            {% elif notification.action == 'DISABLE_USER' %}
+                <div class="complaint-box" style="background-color:#f6ebfb;">
+                    <div class="complaint-title">
+                        <h4 style="text-decoration: none;">Your account has been restricted from posting complaints.</h4>
+                    </div>
+                    <div class="complaint-time">Disabled {{ notification.created|timesince }} ago</div>
+                </div>
+
+            {% elif notification.action == 'ENABLE_USER' %}
+                <div class="complaint-box" style="background-color:#eafeef;">
+                    <div class="complaint-title">
+                        <h4 style="text-decoration: none;">Your account has been re-enabled for posting complaints.</h4>
+                    </div>
+                    <div class="complaint-time">Enabled {{ notification.created|timesince }} ago</div>
+                </div>
+            {% endif %}
+        {% empty %}
+            <p>No notifications found.</p>
+        {% endfor %}
+        <br>
+    </div>
+</div>
+{% endblock content %}

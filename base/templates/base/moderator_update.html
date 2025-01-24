@@ -1,0 +1,53 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}moderator-update-body{% endblock %}
+
+
+{% block content %}
+<div class="moderator-update-main-container">
+    <div class="add-moderator-section">
+        <h3 class="moderator-section-title">Add New Moderator</h3>
+        <form method="post" action="{% url 'moderators-update' %}" class="add-moderator-form" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <input type="text" name="phone_number" placeholder="Enter Phone Number" class="moderator-input" id="phone_number">
+            <p id="error-message" style="color: red; display: none; margin-top: 0em; margin-bottom: 0em;">Phone number cannot be empty.</p>
+            <button type="submit" class="moderator-submit-button">Add Moderator</button>
+        </form>
+    </div>
+
+    <div class="existing-moderators-section">
+        <h3 class="moderator-section-title">Existing Moderators</h3>
+        {% for moderator in moderators %}
+        <div class="moderator-info">
+            <h4 class="moderator-name"><a href="{%url 'profile' moderator.id%}">{{moderator.name}} — +91 {{moderator.phone_number}}</a></h4>
+            <a href="{% url 'moderator-remove' moderator.id %}" class="remove-link">REMOVE</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        const phoneNumberInput = document.getElementById('phone_number');
+        const errorMessage = document.getElementById('error-message');
+        const phoneRegex = /^\d{10}$/;
+
+        if (!phoneNumberInput.value.trim()) {
+            errorMessage.style.display = 'block';
+            return false; // Prevent form submission
+        }
+
+        if (!phoneRegex.test(phoneNumberInput.value.trim())) {
+            errorMessage.style.display = 'block'; // Show the error message
+            errorMessage.textContent = 'Phone number must be exactly 10 digits.';
+            return false; // Prevent form submission
+        }
+
+        errorMessage.style.display = 'none'; // Hide the error message if input is valid
+        return true; // Allow form submission
+    }
+</script>
+
+{% endblock content %}

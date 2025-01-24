@@ -1,0 +1,162 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}about-us-body{% endblock %}
+
+
+{% block content %}
+<main class="about-us-main-container">
+
+    <style>
+        ul li{
+            margin-bottom: 0.4em;
+            font-size: 1em;
+        }
+
+        p {
+            font-size: 1em;
+        }
+    </style>
+
+    <!--<h1 class="about-us-title">Terms & Conditions for the Use of My Kartavyam</h1>-->
+    <div class="about-us-box">
+        <p><strong>Effective Date:</strong> 01/01/2025</p>
+        <h2>Terms & Conditions for the use of My Kartavyam</h2>
+        <p>
+            These Terms of Service ("Terms") govern your use of the <b>My Kartavyam</b> web application (the "Web App"), a platform developed by <b>Sare Jahan Se Acha Socio Eco Pol Foundation Pvt Ltd</b> ( hereinforth called SJSA), a Section 8 Not for Profit company registered with Ministry of Corporate Affairs to encourage citizen participation in local governance by reporting issues affecting daily quality of life in India. By accessing or using the Web App, you agree to comply with these Terms. If you do not agree with these Terms, you are not authorized to use the Web App.        </p>
+        <h3>1. Definitions</h3>
+        <ul>
+            <li><strong>Web App:</strong> The online platform provided by SJSA for concerned citizens to report issues related to their locality, neighbourhood or any place within India.</li>
+            <li><strong>Citizen:</strong> A registered user of the Web App who reports issues pertaining to local problems affecting daily quality of life of an individual/group of people/citizenry at large.</li>
+            <li><strong>SJSA:</strong> The abbreviation for the organization Sare Jahan Se Acha Socio Eco Pol Foundation Pvt Ltd, the foundation which is responsible for the development, maintenance, and operation of the Web App.</li>
+            <li><strong>X (formerly Twitter):</strong> The third-party social media platform where issues reported through the Web App are automatically posted, subject to X’s own terms and conditions.</li>
+            <li><strong>User Profile:</strong> The personal profile created by a Citizen, which includes details such as name, mobile phone number, and optionally, email ID.</li>
+        </ul>
+        <h3>2. Registration and Account Details</h3>
+        <h4>2.1 Registration Requirements</h4>
+        <p>To use the Web App, you must:</p>
+        <ul>
+            <li>Register using a valid mobile phone number.</li>
+            <li>Verify your mobile phone number through an OTP (One-Time Password) sent by government-approved OTP providers.</li>
+            <li>Provide your name and email ID.</li>
+        </ul>
+        <p>Once registered, you can access and use the features of the Web App by reporting issues, uploading images on the platform.</p>
+        <h4>2.2 Account Security</h4>
+        <p>
+            You are responsible for maintaining the confidentiality of your account and your login credentials. You must notify SJSA immediately if you believe your account has been compromised or accessed without your authorization.
+        </p>
+    
+        <h3>3. Use of the App</h3>
+        <h4>3.1 Reporting Issues</h4>
+        <p>After registration, you can:</p>
+        <ul>
+            <li>Upload an image of the issue you are facing.</li>
+            <li>Select the relevant category for the issue from a dropdown list.</li>
+            <li>Provide a landmark location (up to 50 characters).</li>
+            <li>Provide a brief description (up to 300 characters) of the issue.</li>
+        </ul>
+        <h4>3.2 Location Tracking</h4>
+        <p>
+            To submit an issue, your phone’s location services must be enabled. The Web App will capture location details automatically when you upload an image. If location services are disabled, you will be prompted to enable them. Provision to enter the nearest landmark (in text format) is available.  
+        </p>
+        <h4>3.3 Image Requirements</h4>
+        <ul>
+            <li>Only still images (photos) are allowed for uploading with a maximum size of 5MB.</li>
+            <li>The image will be checked for correctness by the inbuilt AI/ML process to match the category selected.</li>
+            <li>If the image is objectionable or disturbing, SJSA reserves the right to reject the upload.</li>
+            <li>If there is a mismatch between the image and selected category, SJSA may reject the issue.</li>
+        </ul>
+        <h4>3.4 Posting to X</h4>
+        <p>
+            Once an issue is successfully uploaded and validated, it will be posted to  X (formerly Twitter), automatically with relevant hashtags, location details, and a unique watermarked number. The posts will be made from the My Kartavyam account and will not display your personal information, such as your phone number or email ID.        
+        </p>
+    
+        <h3>4. User Privacy and Data</h3>
+        <h4>4.1 User Profile Information</h4>
+        <p>Your personal information, including name, phone number, and email ID, will only be accessible to you through your user profile. Your phone number and name cannot be modified after registration.</p>
+        <h4>4.2 Data Collection</h4>
+        <p>The Web App collects your phone number for registration and authentication. Location data is also captured for each issue you report, and your activity within the Web App (such as issues posted and their status) will be stored and visible to you in your profile.</p>
+        <h4>4.3 Privacy on X</h4>
+        <p>
+            All posts made to X from the Web App will not reveal your personal information. Your identity as the originator of the complaint will remain anonymous to the public on X unless you have logged in to X and respond to the thread.
+        </p>
+        <h4>4.4 Compliance with Terms of X</h4>
+        <p>
+            Any posts made to X are subject to X’s terms and conditions, including their privacy policy, data storage, and purging practices. SJSA is not responsible for how X handles or stores the data associated with your reported issue.
+        </p>
+    
+        <h3>5. Post Status</h3>
+        <h4>5.1 Issue Status</h4>
+        <ul>
+            <li>Once posted, issues remain in an open status for a predetermined number of days.</li>
+            <li>If an issue is unresolved within the specified number of days, it will automatically move to "auto closed" status.</li>
+            <li>If an issue has been auto closed, the User Citizen can reopen it by logging into the Web App using their registered mobile number.</li>
+        </ul>
+
+        <h4>5.2 Disputed/Resolved Issue</h4>
+        <p>SJSA, at its discretion, may mark an issue as “Force Close” based on the feedback or comments from X. This status change will be communicated within the Web App, and the user will be notified accordingly.</p>
+        <p>Only the User Citizen can mark an issue as Resolved created by them.</p>
+
+        <h4>5.3 User activity and recognition</h4>
+        <p>Your activity on the Web App, including the number of issues reported and their status, will be tracked. Based on your participation, you may be awarded virtual badges or recognition within the Web App.</p>
+
+        <h3>6. Content Moderation</h3>
+        <h4>6.1 Objectionable Content</h4>
+        <p>SJSA reserves the right to reject any image or content deemed objectionable, disturbing, or inappropriate. This includes content that violates community guidelines, legal requirements, or public policy.</p>
+        
+        <h4>6.2 Misuse of the App</h4>
+        <p>Users must not misuse the Web App for unlawful activities, including but not limited to:</p>
+        <ul>
+            <li>Submitting false, misleading, or irrelevant issues.</li>
+            <li>Uploading content that violates copyright, trademarks, or other intellectual property rights.</li>
+            <li>Engaging in any form of harassment, hate speech, or illegal activity.</li>
+        </ul>
+
+        <h4>6.3 Deletion of Content</h4>
+        <p>
+            If the Web App detects a mismatch between the selected category and the image uploaded, or if the content does not meet the required guidelines, SJSA may delete the issue and prevent it from appearing on the Web App and X.
+        </p>
+
+        <h3>7. Limitation of Liability</h3>
+        <p>
+            SJSA is not liable for:
+            <ul>
+                <li>Any comments or interactions that occur on X or any other social media platform.</li>
+                <li>The failure of X to post or remove any content submitted by the Web App.</li>
+                <li>Any inaccuracies, errors, or omissions in the information posted on X.</li>
+                <li>SJSA is not responsible for the actions, content, or functionality of X, including any content moderation or removal by X.</li>
+            </ul>
+        </p>
+
+        <h3>8. User Posting suspension</h3>
+        <p>
+            SJSA reserves the right to suspend or terminate your access to the Web App at any time if you violate these Terms. Upon termination, you will no longer be able to access your account or report issues through the Web App.
+        </p>
+    
+        <h3>9. Changes to Terms & Conditions</h3>
+        <p>SJSA may update or modify these Terms at any time. Any changes will be communicated via the Web App or other appropriate means. By continuing to use the Web App after such changes, you agree to the revised Terms.</p>
+    
+        <h3>10. Governing Law</h3>
+        <p>
+            These Terms shall be governed by and construed in accordance with the laws of India. Any disputes arising out of or in connection with these Terms shall be subject to the exclusive jurisdiction of the courts in Pune, India.
+        </p>
+
+        <h2>Contact information</h2>
+        <p>If you have any questions or concerns about these Terms, please contact us at:</p>
+        <p>Email: support@mykartavyam.info</p>
+        <p>Address: Sare Jahan Se Acha Socio Eco Pol Foundation Pvt Ltd (SJSA)<br>
+        (A Section 8 Not for Profit Company)</p>
+        <address>
+            <strong>Registered Office:</strong><br>
+            E-102 Kalpataru Regency Phase 2,<br>
+            Lane 10, Kalyani Nagar,<br>
+            Pune 411 006
+        </address>
+        <p><strong>Regd No.:</strong> CIN-U85100PN2013NPL149608</p>
+    </div>
+    <!--<hr class="about-us-divider">-->
+    
+
+ </main>
+{% endblock content %}

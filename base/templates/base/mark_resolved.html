@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}force-close-page-body{% endblock %}
+
+
+{% block content %}
+<div class="resolve-confirmation-container">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <h3>Do you want to mark this complaint as resolved?</h3>
+        <p>Note: This action is irreversible. Only mark the complaint as resolved if the issue has truly been taken care of.</p>
+        <div class="button-group">
+            <input type="submit" value="Confirm" class="resolve-button" />
+            <a href="{{request.META.HTTP_REFERER}}" class="cancel-button">Go Back</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}

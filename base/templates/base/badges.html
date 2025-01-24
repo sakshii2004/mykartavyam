@@ -1,0 +1,53 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}badges-update-body{% endblock %}
+
+{% block content %}
+<div class="badges-update-main-container">
+    <h2 class="badges-update-title">Add A New Badge</h2>
+    <form method = "POST" action = "" enctype="multipart/form-data" class="badges-form">
+        {% csrf_token %}
+        <div class="badges-form-group">
+            <label for="name" class="badges-form-label">Name of the Badge (max 100 characters)</label>
+            {{form.name}}
+            <!--<input type="text" name="badge_name" placeholder="Enter Badge Name" class="badges-form-input">-->
+        </div>
+
+        <div class="badges-form-group">
+            <label for="min_complaints" class="badges-form-label">Minimum Complaints Required</label>
+            <!--<input type="text" name="min_complaints" placeholder="Enter Minimum Complaints" class="badges-form-input">-->
+            {{form.min_complaints}}
+        </div>
+
+        <div class="badges-form-group">
+            <label for="badge_icon" class="badges-form-label">Upload Badge Icon</label>
+            {{form.badge_icon}}
+            <!--<input type="file" name="badge_icon" class="badges-form-input">-->
+        </div>
+
+        <button type="submit" class="badges-submit-button">Create Badge</button>
+    </form>
+
+    <!-- Existing Badges List -->
+    <h2 class="badges-update-title">Badges</h2>
+    <div class="badges-list">
+        {% for badge in badges %}
+        <div class="badges-item">
+            <div class="badges-icon">
+                {% if badge.badge_icon  %}
+                    <img src="{{ badge.badge_icon.url }}" alt="Badge Icon">
+                {% else %}
+                    <img src="{% static 'images/badge-icon.png' %}" alt="Badge Icon">
+                {% endif %}
+            </div>
+            <div class="badges-text">
+                <div class="badge-name">{{badge.name}}</div>
+                <div class="badge-criteria">Minimum Complaints Required: {{badge.min_complaints}}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

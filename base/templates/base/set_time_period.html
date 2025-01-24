@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}moderator-update-body{% endblock %}
+
+
+{% block content %}
+<div class="moderator-update-main-container">
+    <div class="add-moderator-section">
+        <h3 class="moderator-section-title">Change AutoClose Duration</h3>
+        <form method="post" action="{% url 'set_autoclose' %}" class="add-moderator-form">
+            {% csrf_token %}
+            <input 
+                type="number" 
+                name="autoclose_timeperiod" 
+                placeholder="Enter New Duration" 
+                class="moderator-input" 
+                required>
+            <button type="submit" class="moderator-submit-button">Change</button>
+        </form>
+    </div>
+
+    <div class="existing-moderators-section">
+        <h3 class="moderator-section-title">Current Autoclose Duration</h3>
+            <h4 class="moderator-name">Current autoclosing duration of a complaint is {{autoclose_timeperiod}} Days.</h4>
+        </div>
+    </div>
+</div>
+{% endblock content %}

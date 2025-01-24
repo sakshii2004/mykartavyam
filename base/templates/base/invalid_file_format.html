@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}error-page-body{% endblock %}
+
+
+{% block content %}
+<div class="error-main-container">
+    <div class="error-box">
+        <h2 class="error-title">Invalid Image File Format</h2>
+        <p class="error-message">The image seems to have an invalid format. Supported file format include: JPG, JPEG, PNG</p>
+    </div>
+</div>
+{% endblock content %}

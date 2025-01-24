@@ -1,0 +1,82 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}force-close-page-body{% endblock %}
+
+
+{% block content %}
+<style>
+    p {
+        margin-bottom: 0.5em;
+        margin-top: 0.5em;
+    }
+
+    a {
+        text-decoration: None;
+    }
+
+    .profile-card {
+        max-width: 350px;
+    }
+</style>
+<div class="profile-main-container">
+    <h2 class="profile-title">{{profile_user.name |title}}'s Profile</h2>
+
+    <div class="profile-content-container">
+        <!-- Profile Card -->
+        <div class="profile-box profile-card">
+            <p><span class="profile-label">Name:</span> {{profile_user.name}}</p>
+            {% if profile_user.current_badge %}
+                <p>
+                    <span class="profile-label">Badge:</span> 
+                    <span style="display: inline-flex; align-items: center;">
+                        <img src="{{ profile_user.current_badge.badge_icon.url }}" alt="Badge" style="height: 1.25em; vertical-align: middle; margin-right: 0.25em;">
+                        {{ profile_user.current_badge.name }}
+                    </span>
+                </p>            
+            {% endif %}
+            
+            {% if request.user.id == profile_user.id %}
+                <p><span class="profile-label">Phone Number:</span> +91{{profile_user.phone_number}} </p>
+                <p><span class="profile-label">Email:</span> {{profile_user.email}}</p>
+            {% endif %}
+            {% if profile_user.about_me %}
+                <p><span class="profile-label">About Me:</span> {{profile_user.about_me}}</p>
+            {% else %}
+                <p><span class="profile-label">About Me:</span> Passionate about creating positive change in my community. </p>
+            {% endif %}
+            {% if request.user.is_authenticated and request.user.id == profile_user.id %}
+                <a class="profile-edit-button" href="{% url 'edit_profile' %}">Edit Profile</a>
+            {% endif %}
+            {% if request.user.is_authenticated and request.user.id != profile_user.id %}
+                <p style="color: #557c93; font-size: 0.90em;">Joined {{ profile_user.created|timesince }} ago</p>
+            {% endif %}
+        </div>
+
+        <!-- Contributions Section -->
+        <div class="profile-contributions">
+            <h3 class="profile-contributions-title">Recent Contributions</h3>
+            <div class="profile-contribution-list">
+                <!-- Contribution Items -->
+                {% for complaint in complaints %}
+                    <a href = "{% url 'view-complaint' complaint.id %}"  class="profile-contribution-link">
+                        <div class="profile-box profile-contribution-item">
+                            <div class="profile-contribution-title">
+                                <p><u>{{complaint.title}}</u></p>
+                                <p class="profile-status">{{complaint.get_status_display}}</p>
+                            </div>
+                            <p class="profile-posted-time">Posted {{complaint.created|timesince}} ago</p>
+                        </div>
+                    </a>
+
+                {% empty %}
+                    <h4 class="profile-label">No contributions so far. </h4>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

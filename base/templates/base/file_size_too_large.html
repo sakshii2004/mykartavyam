@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}error-page-body{% endblock %}
+
+
+{% block content %}
+<div class="error-main-container">
+    <div class="error-box">
+        <h2 class="error-title">Image Size Limit Exceeded</h2>
+        <p class="error-message">The uploaded image exceeds the maximum allowed size of 3 MB. Please choose a smaller image and try again.</p>
+    </div>
+</div>
+{% endblock content %}

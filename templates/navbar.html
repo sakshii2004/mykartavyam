@@ -1,0 +1,40 @@
+{% load static %}
+
+<header class="header">
+    <div class="container container-nav">
+        <div class="col col-2">
+            <a href="{% url 'home' %}"><img src="{% static 'images/kartavyam_logo.png' %}" alt="Kartavyam Logo" class="logo-icon"></a>
+            <a href="{% url 'home' %}" class="nav-link">HOME</a>
+            <a href="{% url 'create-complaint' %}" class="nav-link">MAKE A COMPLAINT</a>
+            <a href="{% url 'impact' %}" class="nav-link active-link">IMPACT</a>
+            {% if request.user.groups.all.0.name == 'admin' or request.user.groups.all.0.name == 'moderator' %}
+                <a href="{% url 'admin-panel' %}" class="nav-link active-link">ADMIN PANEL</a>
+            {% endif %}
+        </div>
+        <div class="col col-1">
+            {% if request.user.is_authenticated %}
+            {% if user.current_badge %}
+                <img src="{{ user.current_badge.badge_icon.url }}" alt="user-badge" class="badge-icon">
+            {% endif %}
+            <a href="{% url 'profile' request.user.id %}" class="user-name">HELLO, {{request.user.name|upper}}</a>
+            <div class="dropdown">
+                {% if user.profile_picture %}
+                <img  src="{{ user.profile_picture.url }}" alt="user-icon" class="user-icon" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                {% else %}
+                <img src="{% static 'images/default_pfp.jpg' %}" alt="user-icon" class="user-icon" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                {% endif %}   
+                <div class="dropdown-content">
+                    <a href="{% url 'notifications' %}" class="dropdown-link">Notifications</a>
+                    <a href="{% url 'profile' request.user.id %}" class="dropdown-link">View Profile</a>
+                    <a href="{% url 'edit_profile' %}" class="dropdown-link">Edit Profile</a>
+                    <a href="{% url 'logout' %}" class="dropdown-link">Log Out</a>
+                </div>
+            </div>
+            {% else %}
+            <a style="text-decoration: None;color: #214358;" href="{% url 'login' %}"><button class="badges-submit-button" style="background-color: white; color:#214358;">LOGIN</button></a>
+            <a style="text-decoration: None;color: #214358; margin-left: 0.4em" href="{% url 'register' %}"><button class="badges-submit-button" style="background-color: white; color:#214358;">REGISTER</button></a>
+
+            {% endif %}
+        </div>
+    </div>
+</header>

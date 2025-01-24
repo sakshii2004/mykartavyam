@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}force-close-page-body{% endblock %}
+
+
+{% block content %}
+<div class="delete-confirmation-container">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <h3>Do you want to {{action}} {{obj}}?</h3>
+        <p>You can undo this action.</p>
+        <div class="button-group">
+            <input type="submit" value="Confirm" class="delete-button" />
+            <a href="{{request.META.HTTP_REFERER}}" class="cancel-button">Go Back</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,276 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load form_filters %}
+
+
+{% block body_class %}create-complaint-body{% endblock %}
+
+
+{% block content %}
+<div class="create-complaint-main-container">
+    <h1 class="create-complaint-title">Create Complaint</h1>    
+    <div>
+        <form method = "POST" action = "" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="create-complaint-form-group">
+                <label for="title" class="create-complaint-label">Title</label>
+                <!--<input type="text" class="create-complaint-input">-->
+                {{ form.title|add_class:"create-complaint-input" }}
+                <p id="title-counter" class="character-counter">0/50 characters</p>
+
+            </div>
+
+
+            <div class="create-complaint-form-group">
+                <label for="category" class="create-complaint-label">Category</label>
+                {{ form.category|add_class:"create-complaint-select" }}
+                <!--<select name="category" id="category" class="create-complaint-select">
+                    <option value="---">Select a Complaint Category</option>
+                    <option value="Potholes">Potholes</option>
+                    <option value="Garbage Dumps">Garbage Dumps</option>
+                    <option value="Illegal Hoardings">Illegal Hoardings</option>
+                </select>-->
+            </div>
+
+            <div class="create-complaint-form-group">
+                <label for="landmark" class="create-complaint-label">Landmark</label>
+                <!--<input type="text" class="create-complaint-input">-->
+                {{ form.landmark|add_class:"create-complaint-input" }}
+                <p id="landmark-counter" class="character-counter">0/50 characters</p>
+            </div>
+
+            <div class="create-complaint-form-group">
+                <label for="district" class="create-complaint-label">District</label>
+                <!--<input type="text" class="create-complaint-input">-->
+                {{ form.district|add_class:"create-complaint-input" }}
+                <p id="district-counter" class="character-counter">0/20 characters</p>
+            </div>
+
+            <div class="create-complaint-form-group">
+                <label for="state" class="create-complaint-label">State</label>
+                <!--<input type="text" class="create-complaint-input">-->
+                {{ form.state|add_class:"create-complaint-input" }}
+            </div>
+
+            <div class="create-complaint-form-group">
+                <label for = "description" class="create-complaint-label">Description</label>
+                {{ form.description|add_class:"create-complaint-textarea" }}
+                <p id="description-counter" class="character-counter">0/300 characters</p>
+                <!--<textarea id="desc-box" rows="4" cols="50" class="create-complaint-textarea"></textarea>-->
+            </div>
+
+            <div class="create-complaint-form-group">
+                <label for="image" class="create-complaint-label">Image</label>
+                <!--<input type="file" class="create-complaint-input">-->
+                {{ form.image|add_class:"create-complaint-input" }}
+            </div>
+
+            <div class="create-complaint-form-group">
+                <label class="create-complaint-label">Location</label>
+                <div class="create-complaint-location-fields">
+                    <!--<button id="get-location" class="create-complaint-get-location-button">Get Location</button>-->
+                    <button id="get-location" class="create-complaint-submit-button" style="width:45%">Get Location</button>
+                    <!--<input type="text" class="create-complaint-input">
+                    <input type="text" class="create-complaint-input">-->
+                    {{ form.latitude|add_class:"create-complaint-input" }}
+                    {{ form.longitude|add_class:"create-complaint-input" }}
+                </div>
+            </div>
+
+            <button type="submit" class="create-complaint-submit-button">Submit Complaint</button>
+        </form>
+    </div>
+    <br>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('form');
+        const titleField = document.querySelector('input[name="title"]');
+        const landmarkField = document.querySelector('input[name="landmark"]');
+        const descriptionField = document.querySelector('textarea[name="description"]');
+        const imageField = document.querySelector('input[name="image"]');
+        const latitudeField = document.querySelector('input[name="latitude"]');
+        const longitudeField = document.querySelector('input[name="longitude"]');
+        if (latitudeField && longitudeField) {
+            latitudeField.setAttribute("readonly", "readonly");
+            longitudeField.setAttribute("readonly", "readonly");
+        }
+        const errorMessageContainer = document.createElement('div');
+        errorMessageContainer.style.color = 'red';
+        errorMessageContainer.style.marginTop = '1em';
+        form.prepend(errorMessageContainer);
+
+        // Helper function to validate image
+        function validateImage(image) {
+            const allowedTypes = ['image/jpeg', 'image/png'];
+            const maxSize = 3 * 1024 * 1024; 
+            if (!image) return false;
+            if (!allowedTypes.includes(image.type)) {
+                return 'Only JPEG, JPG, and PNG images are allowed.';
+            }
+            if (image.size > maxSize) {
+                return 'Image size must be less than 3MB.';
+            }
+            return null;
+        }
+
+        // Validation function
+        function validateForm(event) {
+            let errors = [];
+            // Title validation
+            if (titleField.value.trim().length < 5) {
+                errors.push('Title must contain at least 5 characters.');
+            }
+            // Landmark validation
+            if (landmarkField.value.trim().length < 5) {
+                errors.push('Landmark must contain at least 5 characters.');
+            }
+            // Description validation
+            if (descriptionField.value.trim().length < 10) {
+                errors.push('Description must contain at least 10 characters.');
+            }
+            // Image validation
+            const imageError = validateImage(imageField.files[0]);
+            if (imageError) {
+                errors.push(imageError);
+            }
+            // Location validation
+            if (!latitudeField.value.trim() || isNaN(latitudeField.value)) {
+                errors.push('Valid latitude is required.');
+            }
+            if (!longitudeField.value.trim() || isNaN(longitudeField.value)) {
+                errors.push('Valid longitude is required.');
+            }
+
+            if (errors.length > 0) {
+                event.preventDefault();
+                errorMessageContainer.innerHTML = errors.join('<br>');
+            } else {
+                errorMessageContainer.innerHTML = '';
+            }
+        }
+
+        // Attach validation to form submission
+        form.addEventListener('submit', validateForm);
+    });
+    
+    // function to update the character counter
+    function updateCounter(inputField, counterElement, maxChars) {
+        inputField.addEventListener('input', () => {
+            const currentLength = inputField.value.length;
+
+            if (currentLength > maxChars) {
+                inputField.value = inputField.value.slice(0, maxChars); 
+            }
+
+            counterElement.textContent = `${currentLength}/${maxChars} characters`;
+        });
+    }
+
+    // attach counters and enforce character limits
+    document.addEventListener('DOMContentLoaded', () => {
+        // title Counter and Limit
+        const titleField = document.querySelector('input[name="title"]');
+        const titleCounter = document.getElementById('title-counter');
+        titleField.setAttribute('maxlength', '50'); 
+        updateCounter(titleField, titleCounter, 50);
+
+        // Landmark Counter and Limit
+        const landmarkField = document.querySelector('input[name="landmark"]');
+        const landmarkCounter = document.getElementById('landmark-counter');
+        landmarkField.setAttribute('maxlength', '50'); 
+        updateCounter(landmarkField, landmarkCounter, 50);
+
+        // District Counter and Limit
+        const districtField = document.querySelector('input[name="district"]');
+        const districtCounter = document.getElementById('district-counter');
+        districtField.setAttribute('maxlength', '20'); 
+        updateCounter(districtField, districtCounter, 20);
+
+        // Description Counter and Limit
+        const descriptionField = document.querySelector('textarea[name="description"]');
+        const descriptionCounter = document.getElementById('description-counter');
+        descriptionField.setAttribute('maxlength', '300'); 
+        updateCounter(descriptionField, descriptionCounter, 300);
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+    console.log("Script loaded");
+
+    const getLocationBtn = document.getElementById("get-location");
+    const submitBtn = document.querySelector(".button.login");
+
+    // Disable the submit button until location is retrieved
+    if (submitBtn) {
+        submitBtn.disabled = true;
+    }
+
+    if (getLocationBtn) {
+        getLocationBtn.addEventListener("click", function(ev) {
+            console.log("Get Location button clicked");
+            ev.preventDefault(); // Prevent form submission
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        });
+    } else {
+        console.warn("Get Location button not found in the DOM.");
+    }
+
+    function showPosition(position) {
+        const latitude = position.coords.latitude.toFixed(6);
+        const longitude = position.coords.longitude.toFixed(6);
+
+        // Set the values of the hidden latitude and longitude input fields
+        document.getElementById('latitude').value = latitude;
+        document.getElementById('longitude').value = longitude;
+
+        // Enable the submit button once coordinates are set
+        if (submitBtn) {
+            submitBtn.disabled = false;
+        }
+
+        //alert(`Location acquired: Latitude: ${latitude}, Longitude: ${longitude}`);
+    }
+
+    function showError(error) {
+        let message = "";
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                message = "User denied the request for Geolocation.";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                message = "Location information is unavailable.";
+                break;
+            case error.TIMEOUT:
+                message = "The request to get user location timed out.";
+                break;
+            case error.UNKNOWN_ERROR:
+                message = "An unknown error occurred.";
+                break;
+        }
+        alert(message);
+
+        // Keep submit button disabled if there's an error
+        if (submitBtn) {
+            submitBtn.disabled = true;
+        }
+    }
+});
+</script>
+
+<style>
+    .character-counter {
+        font-size: 0.90rem;
+        margin-top: 0.45em;
+        color: #3b6681;
+    }
+</style>
+
+{% endblock content %}

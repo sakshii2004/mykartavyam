@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}admin-page-body{% endblock %}
+
+{% block content %}
+<div class="admin-main-container">
+    <h2 class="admin-title">WELCOME {{request.user.groups.all.0.name|upper}}!</h2>
+    <div class="admin-button-group">
+        <a href="{% url 'approve-complaints' %}" class="admin-button" style="text-decoration: None;"><b>Approve / Reject Complaints</b></a>
+        <a href="{% url 'category-update' %}" class="admin-button" style="text-decoration: None;"><b>Edit Categories</b></a>
+        <a href="{% url 'auto-close' %}" class="admin-button" style="text-decoration: None;"><b>Auto Close</b></a>
+        <a href="{% url 'badges-update' %}" class="admin-button" style="text-decoration: None;"><b>Edit Badges</b></a>
+        <a href="{% url 'set_autoclose' %}" class="admin-button" style="text-decoration: None;"><b>Change Autoclose Duration</b></a>
+        <a href="{% url 'disable-user' %}" class="admin-button" style="text-decoration: None;"><b>Disable / Enable Users</b></a>
+        {% if request.user.groups.all.0.name == 'admin' %}
+            <a href="{% url 'moderators-update' %}" class="admin-button" style="text-decoration: None;"><b>Edit Moderators</b></a>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

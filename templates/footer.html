@@ -1,0 +1,15 @@
+{% load static %}
+<footer class="footer">
+    <div class="footer-container">
+        <div style="display: flex;">
+            <h4 class="contact-title" style="margin-bottom: 0em;"><a style="text-decoration: None; color:white;" href="mailto:support@mykartavyam.info">CONTACT US</a></h4>
+            <h4 class="contact-title" style="margin-bottom: 0em; margin-left: 1em;;"><a style="text-decoration: None; color:white;" href="{% url 'about-us' %}">ABOUT US</a></h4>
+        </div>
+
+        <div class="footer-icons">
+            <a href="https://x.com/mykartavyam"><img src="{% static 'images/x-logo.webp' %}" alt="Twitter/X" class="footer-icon"></a>
+            <a href="https://www.instagram.com/mykartavyam/?igsh=MTl1MzlwaWNlYTM1OA%3D%3D&utm_source=qr#"><img src="{% static 'images/instagram-logo.png' %}" class="footer-icon"></a>
+            <a href="https://www.linkedin.com/in/my-kartavyam-55b7a1344/"><img src="{% static 'images/linkedin-logo.png' %}" alt="LinkedIn" class="footer-icon"></a>
+        </div>
+    </div>
+</footer>

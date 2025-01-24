@@ -1,0 +1,349 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block body_class %}about-us-body{% endblock %}
+
+{% block content %}
+<style>
+    main {
+       background-color: white; 
+       padding: 20px;
+    }
+
+    .dashboard-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .card {
+        background-color: #f4f4f4;
+        border: 1px solid #ddd;
+        border-radius: 0.5em;
+        padding: 2em;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 1.2em;
+        color: #214358;
+        margin-bottom: 10px;
+    }
+
+    .card-value {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #366079;
+    }
+
+    .chart-heading {
+        text-align: center;
+        margin-bottom: 1em;
+        font-size: 1.5em;
+        color: #214358;
+    }
+
+    .heatmap-container {
+        width: 100%;
+        height: 600px;
+        margin: 20px auto;
+    }
+
+    .table-row-text {
+        border-bottom: 1px solid #ddd; 
+        padding: 8px; 
+        color:#214358;
+    }
+
+    hr {
+        margin: 1.5em 0;
+    }
+</style>
+
+<main class="about-us-main-container">
+    <!-- Dashboard Cards -->
+    <div class="dashboard-container">
+        <h1 style="color:#214358">MyKartavyam's Impact</h1>
+        <div class="card">
+            <div class="card-title">Total Issues Posted by Citizens</div>
+            <div class="card-value">{{ total_complaints_count }}</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Issues Resolved</div>
+            <div class="card-value">{{ resolved_issues_count }}</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Issues Reopened</div>
+            <div class="card-value">{{ reopened_percentage }}%</div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Line Chart -->
+    <div>
+        <h2 class="chart-heading">Issues Raised in the Past 12 Months</h2>
+        <canvas id="complaintsChart"></canvas>
+    </div>
+
+    <hr>
+
+    <!-- Bar Chart -->
+    <div>
+        <h2 class="chart-heading">Distribution of Complaints Across Categories</h2>
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <hr>
+
+    <div class="dashboard-container">
+        <div class="card">
+            <div class="card-title">Cities Reached</div>
+            <div class="card-value">{{ unique_cities_count }}</div>
+        </div>
+        <div class="card">
+            <div class="card-title">States Impacted</div>
+            <div class="card-value">{{ unique_states_count }}</div>
+        </div>
+    </div>
+
+    <hr>
+       
+    <div> 
+        <h2 class="chart-heading">Complaints by State</h2>
+        <canvas id="stateChart"></canvas>
+    </div>
+
+    <hr>
+    
+    <div>
+        <h2 class="chart-heading">Most Popular Issue Category of Each State</h2>
+        <table class="card" style="width: 100%; text-align: left; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th class="table-row-text">State</th>
+                    <th class="table-row-text">Category</th>
+                    <th class="table-row-text">Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for state, data in state_popular_categories.items %}
+                <tr>
+                    <td class="table-row-text">{{ state }}</td>
+                    <td class="table-row-text">{{ data.category }}</td>
+                    <td class="table-row-text">{{ data.count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <div style="display: flex; justify-content: center; align-items: center; min-height: 50vh;">
+        <div style="max-width: 500px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+            <h2 class="chart-heading">Complaint Status Distribution</h2>
+            <canvas id="statusDonutChart" style="max-width: 400px;"></canvas>
+        </div>
+    </div>
+    <hr>
+    <!-- Heatmap -->
+    <div>
+        <h2 class="chart-heading">Complaints Density Map</h2>
+        <div class="heatmap-container">
+            {{ heatmap_html|safe }}
+        </div>
+    </div>
+    
+</main>
+
+<script>
+    // Data for the line chart
+    const graphData = {{ graph_data|safe }};
+    const months = graphData.months;
+    const counts = graphData.counts;
+
+    // Data for the bar chart
+    const categoryData = {{ category_data|safe }};
+    const categories = categoryData.categories;
+    const categoryCounts = categoryData.counts;
+
+     // Data for the horizontal bar chart
+    const stateData = {{ state_data|safe }};
+    const states = stateData.states;
+    const stateCounts = stateData.counts;
+
+    const donutData = {{ donut_data|safe }};
+    const statuses = donutData.statuses;
+    const statusCounts = donutData.counts;
+
+    // Colors for the donut chart
+    const statusColors = [
+        '#8CD98A', // Resolved (green)
+        '#A6A6A6', // Auto Closed (gray)
+        '#FFDD73', // Reopened (yellow)
+        '#F28E8E', // Open (red)
+    ];
+
+    // Line Chart for complaints by month
+    const complaintsCtx = document.getElementById('complaintsChart').getContext('2d');
+    new Chart(complaintsCtx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Number of Complaints',
+                data: counts,
+                borderColor: '#366079',
+                backgroundColor: 'rgba(54, 96, 121, 0.5)',
+                borderWidth: 2,
+                fill: true,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                tooltip: {
+                    enabled: true,
+                },
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Months',
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Number of Complaints',
+                    },
+                    beginAtZero: true,
+                }
+            }
+        }
+    });
+
+    // Bar Chart for complaints by category
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(categoryCtx, {
+        type: 'bar',
+        data: {
+            labels: categories,
+            datasets: [{
+                label: 'Complaints per Category',
+                data: categoryCounts,
+                backgroundColor: 'rgba(54, 96, 121, 0.5)',
+                borderColor: '#366079',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                tooltip: {
+                    enabled: true,
+                },
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Categories',
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Number of Complaints',
+                    },
+                    beginAtZero: true,
+                }
+            }
+        }
+    });
+
+    const stateCtx = document.getElementById('stateChart').getContext('2d');
+    new Chart(stateCtx, {
+        type: 'bar',
+        data: {
+            labels: states,
+            datasets: [{
+                label: 'Complaints by State',
+                data: stateCounts,
+                backgroundColor: 'rgba(54, 96, 121, 0.5)',
+                borderColor: '#366079',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            indexAxis: 'y', // This makes the bar chart horizontal
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                tooltip: {
+                    enabled: true,
+                },
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Number of Complaints',
+                    },
+                    beginAtZero: true,
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'States',
+                    },
+                },
+            },
+        }
+    });
+
+    // Donut Chart for complaint statuses
+    const statusDonutCtx = document.getElementById('statusDonutChart').getContext('2d');
+    new Chart(statusDonutCtx, {
+        type: 'doughnut',
+        data: {
+            labels: statuses,
+            datasets: [{
+                label: 'Complaint Status',
+                data: statusCounts,
+                backgroundColor: statusColors,
+                borderColor: '#fff',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                tooltip: {
+                    enabled: true,
+                },
+            },
+        }
+    });
+
+</script>
+{% endblock content %}

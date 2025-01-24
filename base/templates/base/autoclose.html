@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}{% endblock %}
+
+
+{% block content %}
+<div class="approve-container">
+    <h3 class="approve-heading">Confirm to auto close complaints:</h3>
+    <p class="approve-note">Note: This action cannot be undone.</p>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="approve-button-container">
+            <input type="submit" value="Confirm" class="approve-confirm-button">
+            <a href="{{request.META.HTTP_REFERER}}" class="approve-back-link">Go Back</a>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}

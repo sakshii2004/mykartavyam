@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}force-close-page-body{% endblock %}
+
+
+{% block content %}
+<div class="resolve-confirmation-container">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <h3>Please confirm if you want to <b>force close</b> this complaint? </h3>
+        <p>Note: This action cannot be undone. </p>
+        <div class="button-group">
+            <input type="submit" value="Confirm" class="resolve-button" />
+            <a href="{{request.META.HTTP_REFERER}}" class="cancel-button">Go Back</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}

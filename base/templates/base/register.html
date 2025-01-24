@@ -1,0 +1,250 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}register-page-body{% endblock %}
+
+{% block content %}
+
+<div class="main-container">
+    <div class="register-container">
+        <h2 class="register-title">Register</h2>
+        <form method="POST" action="/register/" id="initialForm" class="register-form">
+            {% csrf_token %}
+            <p id="message" style="color: red; margin-top: 1em;"></p>
+            <div id="otp_section" style="display: none; margin-top: 20px;">
+                <label for="otp"  class="register-label">Enter OTP</label>
+                <input type="text" id="otp" name="otp" class="register-input" required placeholder="Enter OTP" style="margin-bottom:0.75em; margin-top:0.75em;">
+                <button type="button" onclick="verifyOTP()" class="submit-button" style="margin-bottom:0.75em;">Verify OTP and Register</button>
+                <button type="button" id="resend_otp" onclick="sendOTP()" class="submit-button">Resend OTP</button>
+            </div>
+
+            <label for="name" class="register-label">Name</label>
+            <input type="text" id="name" name="name" class="register-input" required placeholder="Enter your name" style="margin-bottom:0.75em;">
+
+            <label for="phone_number" class="register-label">Phone Number</label>
+            <input type="text" id="phone_number" name="phone_number" class="register-input" required placeholder="Enter your phone number" style="margin-bottom:0.75em;">
+
+            <label for="email" class="register-label">Email</label>
+            <input type="email" id="email" name="email" class="register-input" required placeholder="Enter your email" style="margin-bottom:0.75em;">
+
+            
+            <div>
+                <input type="checkbox" id="tnc_checkbox" style="margin-right: 0.5em;">
+                <label for="tnc_checkbox">I agree to the 
+                    <a style="text-decoration: None; color: #527b95;" href="{% url 'tnc' %}" target="_blank">Terms & Conditions</a>
+                    and
+                    <a style="text-decoration: None; color: #527b95;" href="{% url 'privacy-policy' %}" target="_blank">Privacy Policy</a>
+                </label>
+            </div>
+
+            <button type="button" onclick="sendOTP()" class="submit-button" id="send_otp_btn">Send OTP</button>            
+
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        const tncCheckbox = document.getElementById("tnc_checkbox");
+        const sendOtpButton = document.getElementById("send_otp_btn");
+
+        sendOtpButton.disabled = true;
+        sendOtpButton.style.backgroundColor = "#d3d3d3"; // Gray-out button
+        sendOtpButton.style.cursor = "not-allowed";
+
+        // Listen for checkbox changes
+        tncCheckbox.addEventListener("change", () => {
+            sendOtpButton.disabled = !tncCheckbox.checked; // Enable button if checked
+            if (tncCheckbox.checked) {
+                sendOtpButton.style.backgroundColor = ""; // Reset to default color
+                sendOtpButton.style.cursor = "";
+            } else {
+                sendOtpButton.style.backgroundColor = "#d3d3d3"; // Gray-out button
+                sendOtpButton.style.cursor = "not-allowed";
+            }
+        });
+    });
+    
+
+    let otpTimer;
+
+    // Function to send OTP
+    function sendOTP() {
+        const phoneNumber = document.getElementById('phone_number').value;
+        const email = document.getElementById('email').value; 
+        const name = document.getElementById('name').value;
+        const messageElement = document.getElementById('message'); 
+        messageElement.textContent = ''; 
+
+        if (!phoneNumber) {
+            messageElement.style.color = 'red';
+            messageElement.textContent = "Please enter your phone number.";
+            return;
+        }
+
+        const phoneNumberRegex = /^\d{10}$/; // Regex for 10 digits
+        if (!phoneNumberRegex.test(phoneNumber)) {
+            messageElement.textContent = "Phone number must be 10 digits without spaces.";
+            return;
+        }
+
+        if (!email) {
+            messageElement.style.color = 'red';
+            messageElement.textContent = "Please enter your email.";
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation regex
+        if (!emailRegex.test(email)) {
+            messageElement.style.color = 'red';
+            messageElement.textContent = "Please enter a valid email address.";
+            return;
+        }
+
+        if (!name) {
+            messageElement.style.color = 'red';
+            messageElement.textContent = "Please enter your name.";
+            return;
+        }
+
+        const nameRegex = /^[A-Za-z\s]+$/; // Regex for names (letters and spaces only)
+        if (!nameRegex.test(name)) {
+            messageElement.style.color = 'red';
+            messageElement.textContent = "Name should not contain numbers or special characters.";
+            return;
+        }
+
+        // AJAX call to send OTP
+        fetch('/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({ phone_number: phoneNumber, name: name, email: email, })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.error || `HTTP Error: ${response.status}`);
+                });
+            }
+            return response.json().then(data => {           
+                // Check if `message` exists and handle it first
+                if (data.message) {
+                    messageElement.style.color = 'green';
+                    messageElement.textContent = data.message; // Show success message
+                    document.getElementById('otp_section').style.display = 'block';
+                    //disable the fields to prevent user from editing these when OTP processing is happening
+                    const fields = ['phone_number', 'email', 'name'];
+                    fields.forEach(fieldId => {
+                        const field = document.getElementById(fieldId);
+                        field.disabled = true;
+                        field.style.backgroundColor = '#E8F0FE'; // Light gray background
+                    });
+                    const sendOtpButton = document.getElementById("send_otp_btn");
+                    sendOtpButton.disabled = true;
+                    sendOtpButton.style.display = 'none';
+                    const checkBox = document.getElementById("tnc_checkbox");
+                    checkBox.disabled = true;
+                    startOTPTimer();
+                    return; // Exit further logic after showing the message
+                }
+
+                // Handle redirect if `redirect_url` is present
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url; // Redirect to login
+                    return;
+                }
+                // Throw an error if neither `message` nor `redirect_url` is provided
+                throw new Error('Unexpected response format');
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            if (error.message) {
+                messageElement.style.color = 'red';
+                messageElement.textContent = error.message; // Show specific error message
+            } else {
+                messageElement.style.color = 'red';
+                messageElement.textContent = 'An unexpected error occurred.';
+            }
+        });
+    }
+
+    // Function to start the OTP timer
+    function startOTPTimer() {
+        let timer = 60; // 1-minute timer
+        const resendButton = document.getElementById('resend_otp');
+        resendButton.disabled = true;
+        resendButton.style.backgroundColor = '#d3d3d3';
+        resendButton.style.cursor = 'not-allowed';
+        resendButton.style.color = '#6c757d';
+
+        otpTimer = setInterval(() => {
+            if (timer <= 0) {
+                clearInterval(otpTimer);
+                resendButton.disabled = false;
+                resendButton.innerText = "Resend OTP";
+                resendButton.style.backgroundColor = '';
+                resendButton.style.cursor = '';
+                resendButton.style.color = ''; 
+            } else {
+                resendButton.innerText = `Resend OTP in ${timer}s`;
+                timer--;
+            }
+        }, 1000);
+    }
+
+    // Function to verify OTP
+    function verifyOTP() {
+        const phoneNumber = document.getElementById('phone_number').value;
+        const otp = document.getElementById('otp').value;
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const messageElement = document.getElementById('message'); // For feedback
+        messageElement.textContent = ''; // Clear previous messages
+
+        if (!otp) {
+            messageElement.style.color = 'red';
+            messageElement.textContent = "Please enter the OTP.";
+            return;
+        }
+
+        // AJAX call to verify OTP and complete registration
+        fetch('/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                phone_number: phoneNumber,
+                name: name,
+                email: email,
+                otp: otp
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                messageElement.style.color = 'green';
+                messageElement.textContent = data.message; // Show success message
+                window.location.href = '/'; // Redirect to the home page
+            } else if (data.error) {
+                messageElement.style.color = 'red';
+                messageElement.textContent = data.error; // Show error message
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            messageElement.style.color = 'red';
+            messageElement.textContent = 'An unexpected error occurred.';
+        });
+    }
+</script>
+{% endblock content %}

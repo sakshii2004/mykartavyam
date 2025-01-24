@@ -1,0 +1,148 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load form_filters %}
+
+{% block body_class %}home-body{% endblock %}
+
+{% block content %}
+<main class="home-main-container">
+    <div class="home-search-bar" style="margin-bottom:0em;">
+        <form method="GET" action = "{% url 'home' %}" class="home-form-group">
+            <input type="text" name = "r" placeholder="Search by Reference No..." class="home-input-text">
+            <button type="submit" class="home-search-button">Search</button>
+        </form>
+
+        <form method="GET" action="{% url 'home' %}" class="home-form-group">
+            <input type="text" name="q" placeholder="Search by Title..." class="home-input-text">
+            <button type="submit" class="home-search-button">Search</button>
+        </form>
+
+        <form method="GET" action = "{% url 'home' %}" class="home-form-group">
+            <select name="c" class="home-dropdown-select">
+                <option value="">Search by Category...</option>
+                    {% for category in categories %}
+                        <option value="{{ category.name }}">{{ category.name }}</option>
+                    {% endfor %}
+            </select>
+            <button type="submit" class="home-search-button">Search</button>
+        </form>
+
+        <form method="GET" action = "{% url 'home' %}" class="home-form-group">
+            <select name="status" class="home-dropdown-select">
+                <option value="">Search by Status...</option>
+                <option value="OPEN">OPEN</option>
+                <option value="RESOLVED">RESOLVED</option>
+                <option value="AUTO_CLOSED">AUTO CLOSED</option>
+                <option value="REOPENED">REOPENED</option>
+            </select>
+            <button type="submit" class="home-search-button">Search</button>
+        </form>
+
+        <form method="GET" action = "{% url 'home' %}" class="home-form-group">
+            <input type="text" name = "d" placeholder="Search by District..." class="home-input-text">
+            <button type="submit" class="home-search-button">Search</button>
+        </form>
+        <form method="GET" action = "{% url 'home' %}" class="home-form-group">
+            <input type="text" name = "s" placeholder="Search by State..." class="home-input-text">
+            <button type="submit" class="home-search-button">Search</button>
+        </form>
+    </div>
+
+    <section class="home-complaints-section">
+        <h2 class="home-section-title">Recent Complaints</h2>
+        {% for complaint in complaints %}
+        <div style="margin-bottom: 10px;" class="home-complaint-box">
+            <div class="home-complaint-details">
+                <h3 class="home-complaint-title"><b>{{ complaint.title }}</b></h3>
+                <p class="home-complaint-info"><strong>Reference ID:</strong> {{ complaint.reference_id }}</p>
+                <p class="home-complaint-info"><strong>Category:</strong> {{ complaint.category }}</p>
+                <p class="home-complaint-info"><strong>Status:</strong> {{ complaint.get_status_display }}</p>
+                {% if user.is_authenticated %}
+                    <p class="home-complaint-info"><strong>Posted By:</strong> <a style="text-decoration: None; color:#689bbb;" href="{% url 'profile' complaint.citizen.id %}">{{ complaint.citizen.name }}</a></p>
+                {% else %}
+                    <p class="home-complaint-info"><strong>Posted By:</strong> Concerned Citizen</p>
+                {% endif %}
+                <p class="home-complaint-info"><strong>Posted On:</strong> {{ complaint.created }}</p>
+                <p class="home-complaint-description"><strong>Description: </strong>{{ complaint.description|truncate_with_ellipsis:100 }}</p>
+                <p class="home-complaint-location">
+                    <strong>Location:</strong> 
+                    {% if complaint.latitude and complaint.longitude %}
+                        <a href="https://www.google.com/maps?q={{ complaint.latitude }},{{ complaint.longitude }}" target="_blank" class="home-location-link" style="text-decoration: underline;">View on Google Maps</a>
+                    {% endif %}
+                </p>
+                <a href="{% url 'view-complaint' complaint.id %}" class="home-view-button">View Complaint</a>
+                {% if complaint.citizen == request.user %}
+                    <a href="{% url 'delete-complaint' complaint.id %}" class="home-view-button">Delete Complaint</a>
+                {% endif %}
+            </div>
+            <div class="home-complaint-image">
+                {% if complaint.image %}
+                <img src="{{ complaint.image.url }}" alt="{{ complaint.title }}" class="home-image">
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+    <div class="pagination">
+        <span class="step-links">
+            {% if complaints.has_previous %}
+                <a href="?{{ query_string }}&page=1">« First</a>
+                <a href="?{{ query_string }}&page={{ complaints.previous_page_number }}">Previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ complaints.number }} of {{ complaints.paginator.num_pages }}
+            </span>
+    
+            {% if complaints.has_next %}
+                <a href="?{{ query_string }}&page={{ complaints.next_page_number }}">Next</a>
+                <a href="?{{ query_string }}&page={{ complaints.paginator.num_pages }}">Last »</a>
+            {% endif %}
+        </span>
+    </div>
+        
+</main>
+
+<style>
+    .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1.5rem 0;
+    }
+
+    .pagination .step-links {
+        display: flex;
+        gap: 0.5rem; 
+        font-size: 1rem; 
+    }
+
+    .pagination a {
+        text-decoration: none;
+        color: white; 
+        background-color: #214358; 
+        padding: 8px 12px; 
+        border-radius: 4px; 
+        border: 1px solid #ffffff; 
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .pagination a:hover {
+        background-color: #51758c; 
+    }
+
+    .pagination .current {
+        color: #214358;
+        background-color: #ffffff; 
+        padding: 8px 12px; 
+        border-radius: 4px;
+        font-weight: bold;
+    }
+
+    .pagination span {
+        display: inline-block;
+        margin: 0 0.2em;
+        font-size: 1rem;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}{% endblock %}
+
+
+{% block content %}
+<div class="complaint-approval-container">
+    <h1 class="page-heading">Complaints Waiting for Approval</h1>
+    <p class="complaint-count">{{unapproved_complaint_count}} complaint(s) found</p>
+
+    <div class="complaints-list" style="margin: 0 2.5em;">
+        {% for complaint in unapproved_complaints %}
+            <a href="{% url 'view-complaint' complaint.id %}" class="complaint-link">
+                <div class="complaint-box" style="background-color:#ebf6fd">
+                    <div class="complaint-title">
+                        <h4>{{ complaint.title }}</h4>
+                    </div>
+                    <div class="complaint-time">Posted {{ complaint.created|timesince }} ago</div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

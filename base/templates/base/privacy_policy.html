@@ -1,0 +1,80 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}about-us-body{% endblock %}
+
+
+{% block content %}
+<main class="about-us-main-container">
+
+    <div class="about-us-box">
+        <h1>Privacy Policy for My Kartavyam</h1>
+        <p><strong>Effective Date:</strong> 01/01/2025</p>
+        <p>This Privacy Policy outlines how Sare Jahan Se Acha Socio Eco Pol Foundation Pvt Ltd (SJSA), collects, uses, and protects the personal data of users who access and use the web application My Kartavyam (hereinafter referred to as "the App"). By using the App, you agree to the collection, use, and processing of your personal data as described in this Privacy Policy.</p>
+        <h2>1. Introduction</h2>
+        <p>My Kartavyam is an AI/ML-based web application designed to empower concerned citizens in India to report civic issues that affect their daily lives. The platform allows users to log in, report issues, upload images, and engage in local governance processes.</p>
+        <h2>2. Data collection</h2>
+        <p>When using the App, we collect the following information from users:</p>
+        <ul>
+            <li>Phone Number: Required for registration and verification via OTP (One Time Password).</li>
+            <li>Name: to be provided during registration.</li>
+            <li>Email ID: to be provided during registration.</li>
+            <li>Location Data: Is identified when a user uploads an image, based on the GPS location of the device.</li>
+            <li>Landmark: User Citizen can input the nearest landmark of the location.</li>
+            <li>Image: Users can upload an image (photo) related to the reported issue.</li>
+            <li>Text Description: A brief description (up to 300 characters) of the reported issue.</li>
+        </ul>
+        <h2>3. Purpose of Data Collection</h2>
+        <p>The data we collect is used for the following purposes:</p>
+        <ul>
+            <li>User authentication: To verify users through OTP and enable them to log in.</li>
+            <li>Issue reporting: To allow users to report civic issues, including uploading images, descriptions, and location details.</li>
+            <li>Facilitating citizen engagement: To facilitate the reporting and resolution of civic issues, as well as the sharing of these issues on the platform (X, formerly Twitter).</li>
+            <li>User recognition: To recognize users based on their participation level through virtual badges.</li>
+        </ul>
+        <h2>4. Use of AI/ML technology</h2>
+        <p>The App utilizes AI/ML technology to:</p>
+        <ul>
+            <li>Validate the image and text submitted.</li>
+            <li>Ensure the relevance of the issue being reported.</li>
+            <li>Automatically post valid issues to X (formerly Twitter) by using hashtags and location details.</li>
+        </ul>
+        <h2>5. Data sharing</h2>
+        <p>
+            <strong>With Government Investigating Authorities:</strong> SJSA may share personal data with government bodies in case there is a legal dispute or investigation related to the reported issue.<br>
+            <strong>With X (formerly Twitter):</strong> All valid posts will be shared on X, but no personal data will be shared. The unique issue number will be watermarked on the image for tracking purposes.
+        </p>
+        <h2>6. User privacy and profile information</h2>
+        <p>
+            <strong>Visibility of personal information:</strong> The phone number and name are visible only to the user when they log in to their profile. The profile picture is not visible to anyone other than the user.<br>
+            <strong>Name, phone number and Email Id:</strong> Name and phone number cannot be edited once registered. Email Id can be modified.<br>
+            <strong>Logged-In activities:</strong> Users can view their past activities, including issues they have reported and their current status.<br>
+            <strong>Right to control data:</strong> Users can see their activity and issue status by logging into their profile but cannot edit their phone number or name once registration is completed.
+        </p>
+        <h2>7. User consent</h2>
+        <p>By using the App, you consent to the collection, processing, and sharing of your personal data as outlined in this Privacy Policy.</p>
+        <h2>8. Security measures</h2>
+        <p>We take reasonable precautions to protect your personal data. However, please be aware that no security measures are completely foolproof, and SJSA cannot guarantee the absolute security of your data.</p>
+        <h2>9. Data retention</h2>
+        <p>User data, including issues reported, will be retained for a predetermined number of days in an open status. After this period, the issue will automatically be moved to "Auto closed" status unless manually ‘Resolved’ marked by the User.</p>
+        <h2>10. Third-party services</h2>
+        <p>The App interacts with third-party services, such as X, to facilitate issue reporting and visibility. The handling of your data by third parties is governed by their respective privacy policies, and SJSA is not responsible for their actions.</p>
+        <h2>11. Automated data processing</h2>
+        <p>The App uses automated AI/ML technology to process uploaded images and descriptions to validate their relevance, check for correctness, and determine whether they can be shared on X. This process is necessary to ensure that only valid issues are posted to the platform.</p>
+        <h2>12. Cookies</h2>
+        <p>The App may use cookies to enhance the user experience. This also helps in improving the functionality of the App and analyzing usage patterns.</p>
+        <h2>13. User rights</h2>
+        <p>As a user of the App, you have the following rights:</p>
+        <ul>
+            <li><strong>Access:</strong> You can access and view your personal data stored in the App.</li>
+            <li><strong>Rectification:</strong> You can update or correct your profile information (except phone number and name).</li>
+        </ul>
+        <h2>14. Changes to this Policy</h2>
+        <p>We reserve the right to update this Privacy Policy at any time. Any changes will be posted on this page, and the date of the update will be reflected at the top of the policy. We encourage you to review this policy periodically to stay informed of how we are protecting your data.</p>
+        <h2>15. Contact Information</h2>
+        <p>If you have any questions or concerns about this Privacy Policy or the way we handle your personal data, please contact us at:<br>
+        Email: support@mykartavyam.info</p>
+    </div>
+ </main>
+{% endblock content %}

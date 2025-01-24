@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}error-page-body{% endblock %}
+
+
+{% block content %}
+<div class="error-main-container">
+    <div class="error-box">
+        <h2 class="error-title">Oops... something bad happened :(</h2>
+        <p class="error-message">We encountered an unexpected error. Please try again later.</p>
+    </div>
+</div>
+{% endblock content %}

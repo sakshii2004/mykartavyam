@@ -1,0 +1,79 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}about-us-body{% endblock %}
+
+
+{% block content %}
+<style>
+    a {
+        text-decoration: None;
+        color: #4d87ac;
+        
+        font-weight: bold;
+    }
+
+    a:hover {
+        color: #6f9fbd; 
+    }
+</style>
+<main class="about-us-main-container">
+    <h1 class="about-us-title">ABOUT US</h1>
+    <div class="about-us-box">
+        <p>
+            <b>"Kartavyam"</b> is a Sanskrit term that translates to <b>"duty"</b> or <b>"responsibility"</b> in English. It refers to the ethical and moral <b>obligations</b> that one is bound to fulfill in various aspects of life. In the broader Indian philosophical and spiritual context, <b>kartavyam</b> emphasizes the performance of one's duties.
+        </p>
+        <p>
+            <b>Kartavyam</b> is a platform designed to <b>empower citizens</b> and improve the quality of life in our communities by addressing everyday civic issues. Our mission is to provide a <b>simple yet powerful</b> way for people to <b>report problems</b> in their surroundings and bring the authorities' attention to their everyday issues. Whether it's <b>potholes, streetlight failures, waste management, water supply disruptions</b>, or any other public concern, Kartavyam allows users to easily log complaints and follow their progress. Our aim is to foster a more <b>responsive and accountable system</b> where <b>every voice matters</b>, and every issue can be addressed effectively.
+        </p>
+
+        <p>
+            This platform was developed by students of Symbiosis Institute of Technology, Pune — 
+            <a href="https://www.linkedin.com/in/sakshi-sah-42238a26b/">Sakshi Sah</a>,
+            <a href="https://www.linkedin.com/in/rhea-chainani-92719524a/">Rhea Chainani</a>,
+            <a href="https://www.linkedin.com/in/ramitha-v-22a870249/">Ramitha V</a>, 
+            <a href="https://www.linkedin.com/in/saharsh-mehrotra-26284025b/">Saharsh Mehrotra</a> and
+            <a href="https://www.linkedin.com/in/riya-shukla-95b919251/">Riya Shukla</a>              
+            in collaboration with <a href="https://sarejahanseacha.in/">Sare Jahan Se Accha Socio Eco Pol Foundation</a>.
+        </p>
+
+        <p>Find the <a href="{% url 'tnc' %}">Terms & Conditions</a> for the use of My Kartavyam and <a href="{% url 'privacy-policy' %}">Privacy Policy</a> here.</p>
+    </div>
+    <hr class="about-us-divider">
+    
+    <h1 class="about-us-title">BADGES</h1>
+    <p class="about-us-badge-description">Earn badges by helping out the community.</p>
+
+    <!-- Badge Section 
+    <div class="badge-box-container">
+        {% for badge in badges %}
+        <div class="about-us-box">
+            <div class="badge-container">
+                <div class="badge-icon">
+                    <img src="{{ badge.badge_icon.url }}" alt="Pratham Kadam">
+                </div>
+                <div class="badge-info">
+                    <h2 class="badge-title"><b>{{badge.name}}</b></h2>
+                    <p class="badge-requirement">Minimum Complaints Required: {{badge.min_complaints}} </p>
+                </div>
+            </div>
+        </div>
+        {% endfor%}
+    </div>-->
+    <div class="badges-list">
+        {% for badge in badges %}
+        <div class="badges-item">
+            <div class="badges-icon">
+                <img src="{{ badge.badge_icon.url }}" alt="Badge Icon">
+            </div>
+            <div class="badges-text">
+                <div class="badge-name">{{badge.name}}</div>
+                <div class="badge-criteria">Minimum Complaints Required: {{badge.min_complaints}}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</main>
+{% endblock content %}

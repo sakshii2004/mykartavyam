@@ -1,0 +1,31 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}force-close-page-body{% endblock %}
+
+
+{% block content %}
+<div class="delete-confirmation-container">
+    <form method="POST" action="">
+        {% csrf_token %}
+        {% if is_admin or is_moderator %}
+            {% if complaint.status == "AWAITING_APPROVAL" %}
+                <h3>Confirm the rejection of complaint?</h3>
+                <p>Note: You are rejecting this complaint as an admin / moderator.</p>
+            {% else %}
+                <h3>Confirm the deletion of {{obj}}?</h3>
+                <p>Note: You are deleting this complaint as an admin / moderator.</p>
+            {% endif %}
+        {% else %}
+            <h3>Do you want to delete {{obj}}?</h3>
+            <p>{{text}}</p>
+            
+        {% endif %}
+        <div class="button-group">
+            <input type="submit" value="Confirm" class="delete-button" />
+            <a href="{{request.META.HTTP_REFERER}}" class="cancel-button">Go Back</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}

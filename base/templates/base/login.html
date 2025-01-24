@@ -1,0 +1,185 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body_class %}login-page-body{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/view_complaint.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="login-container">
+    <h2 class="login-title">Login</h2>
+    <form method="POST" id="initialForm" action="/login/">
+        {% csrf_token %}
+        <label for="phone_number" class="login-label">Phone Number</label>
+        <input type="text" name="phone_number" id="phone_number" class="login-input" required placeholder="Enter your phone number" style="margin-top:0.5em;">
+        
+        <button type="button" class="submit-button" onclick="sendOTP()" style="margin-top:0.5em;" id="send-otp-button">Send OTP</button>
+
+        <div id="otp_section" style="display: none; margin-top: 2em;">
+            <label for="otp" class="login-label" style="margin-top:0.5em;">Enter OTP</label>
+            <input type="text" id="otp" name="otp" class="login-input" required placeholder="Enter OTP" style="margin-bottom:0.5em;">
+            <button type="button" onclick="verifyOTP()" class="submit-button">Verify OTP and Login</button>
+            <button type="button" id="resend_otp" onclick="sendOTP()" class="submit-button" style="margin-top:0.5em;">Resend OTP</button>
+        </div>
+        <p id="message" style="color: red; margin-top: 1em;"></p>
+    </form>    
+</div>
+
+<script>
+
+    let otpTimer;
+
+    // Function to send OTP
+    function sendOTP() {
+        const phoneNumber = document.getElementById('phone_number').value;
+        const messageElement = document.getElementById('message');
+        messageElement.textContent = '';
+
+        if (!phoneNumber) {
+            messageElement.textContent = "Please enter your phone number.";
+            return;
+        }
+
+        const phoneNumberRegex = /^\d{10}$/; // Regex for 10 digits
+        if (!phoneNumberRegex.test(phoneNumber)) {
+            messageElement.textContent = "Phone number must be 10 digits without spaces.";
+            return;
+        }
+
+        fetch('/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({ phone_number: phoneNumber })
+        })
+        .then(response => {
+            if (!response.ok) {
+                // Parse the JSON error message and throw it
+                return response.json().then(data => {
+                    throw new Error(data.error || `HTTP Error: ${response.status}`);
+                });
+            }
+            return response.json(); // Parse the JSON response if successful
+        })
+        .then(data => {
+            // Handle successful response
+            if (data.message) {
+                messageElement.style.color = 'green';
+                messageElement.textContent = data.message;
+                document.getElementById('otp_section').style.display = 'block';
+
+                // Disable phone number field and button to prevent resubmission
+                const phoneNum = document.getElementById("phone_number");
+                phoneNum.disabled = true;
+                const sendOtpButton = document.getElementById("send-otp-button");
+                sendOtpButton.disabled = true;
+                sendOtpButton.style.display = 'none';
+
+                startOTPTimer();
+                return;
+            }
+
+            // Handle redirect if `redirect_url` is present
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+                return;
+            }
+
+            throw new Error('Unexpected response format');
+        })
+        .catch(error => {
+            // Handle errors, including HTTP errors and network issues
+            console.error('Error:', error);
+            messageElement.style.color = 'red';
+            messageElement.textContent = error.message || 'An unexpected error occurred.';
+        });
+    }
+
+    // Function to start the OTP resend timer
+    function startOTPTimer() {
+        let timer = 60; // 1-minute timer
+        const resendButton = document.getElementById('resend_otp');
+        resendButton.disabled = true;
+        resendButton.style.backgroundColor = '#d3d3d3';
+        resendButton.style.cursor = 'not-allowed';
+        resendButton.style.color = '#6c757d';
+
+        otpTimer = setInterval(() => {
+            if (timer <= 0) {
+                clearInterval(otpTimer);
+                resendButton.disabled = false;
+                resendButton.innerText = "Resend OTP";
+                resendButton.style.backgroundColor = '';
+                resendButton.style.cursor = '';
+                resendButton.style.color = ''; 
+            } else {
+                resendButton.innerText = `Resend OTP in ${timer}s`;
+                timer--;
+            }
+        }, 1000);
+    }
+
+    // Function to verify OTP
+    function verifyOTP() {
+        const phoneNumber = document.getElementById('phone_number').value;
+        const otp = document.getElementById('otp').value;
+        const messageElement = document.getElementById('message');
+
+        messageElement.textContent = '';
+
+        if (!otp) {
+            messageElement.style.color = 'red';
+            messageElement.textContent = "Please enter the OTP.";
+            return;                
+        }
+
+        fetch('/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                phone_number: phoneNumber,
+                otp: otp
+            })
+        })
+        .then(response => {
+            if (response.status === 302) {
+                // Handle redirect
+                return response.json().then(data => {
+                    window.location.href = data.redirect_url;
+                });
+            }
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error || 'Unknown error'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.message) {
+                //alert(data.message);
+                window.location.href = '/'; // Redirect to the home page
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            if (error.message) {
+                messageElement.style.color = 'red';
+                messageElement.textContent = error.message;
+            }
+            else {
+                messageElement.style.color = 'red';
+                messageElement.textContent = 'An unexpected error occurred.';
+            }
+        });
+    }
+</script>
+
+{% endblock content %}
