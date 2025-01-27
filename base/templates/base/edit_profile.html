@@ -75,7 +75,7 @@
         </form>
     </div>
 </div>
-<script>
+<!--<script>
         document.addEventListener("DOMContentLoaded", function() {
         const fileInput = document.getElementById('id_profile_picture'); // Make sure this ID matches the actual file input's ID
         const fileNameDisplay = document.getElementById('file-name-display'); // ID of the <span> to show the filename
@@ -127,5 +127,58 @@
             console.warn("File input with ID 'id_profile_picture' not found.");
         }
     });
+</script>-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    // File input handling for Profile Picture
+    const fileInput = document.getElementById('id_profile_picture'); // Ensure this matches the ID of your file input
+    const fileNameDisplay = document.getElementById('file-name-display'); // ID of the <span> to show the filename
+    const profilePicturePreview = document.querySelector('.edit-profile-picture'); // Class of the current profile picture <img>
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                fileNameDisplay.textContent = file.name + ' selected';
+
+                // Preview the uploaded image
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    profilePicturePreview.src = e.target.result; // Set the preview image source
+                };
+                reader.readAsDataURL(file); // Read the uploaded file
+            } else {
+                fileNameDisplay.textContent = 'No file chosen';
+            }
+        });
+    } else {
+        console.warn("File input with ID 'id_profile_picture' not found.");
+    }
+
+    // Character Counter for About Me
+    const aboutMeField = document.getElementById("id_about_me"); // Ensure this matches your field's ID
+    const counter = document.getElementById("about-me-counter");
+
+    if (aboutMeField && counter) {
+        // Initialize the counter with the current length of the field
+        const initialLength = aboutMeField.value.length;
+        counter.textContent = `${initialLength} / 200`;
+
+        // Add input event listener to enforce character limit and update the counter
+        aboutMeField.addEventListener("input", function () {
+            let value = aboutMeField.value;
+            const length = value.length;
+
+            if (length > 200) {
+                // Prevent typing further by trimming the value
+                aboutMeField.value = value.slice(0, 200);
+            }
+
+            // Update the counter
+            counter.textContent = `${aboutMeField.value.length} / 200`;
+        });
+    }
+});
+
 </script>
 {% endblock content %}

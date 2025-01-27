@@ -42,53 +42,21 @@ def reverseGeoLoc(latlong):
     except Exception as e:
         return None, None, None  
     
-
 def post_to_social_media(complaint):
     try:
-        # getting all the text
         tweet_text = (
-            f"Reference id: {complaint.reference_id} \n"
-            f"Title: {complaint.title} \n"
-            f"Category: {complaint.category.name} \n"
-            f"Location: {complaint.district}, {complaint.state} "
-            f"https://www.google.com/maps?q={complaint.latitude},{complaint.longitude} \n"
-            f"Landmark: {complaint.landmark} \n"
-            f"More at: https://mykartavyam.info/view-complaint/{complaint.id} \n"
-            f"#kartavyam #kartavyam_{complaint.district} #kartavyam_{complaint.state}"
-        )
-
-        # figuring out how much space we can give to the title if tweet exceeds the char limit
+                f"#mykartavyam #mykartavyam_{complaint.district} #mykartavyam_{complaint.state}\n"
+                f"Location: {complaint.district}, {complaint.state} "
+                f"https://www.google.com/maps?q={complaint.latitude},{complaint.longitude} \n"
+                f"More at: https://mykartavyam.info/view-complaint/{complaint.id} \n"
+                f"Reference id: {complaint.reference_id} \n"
+                f"Category: {complaint.category} \n"
+                f"Landmark: {complaint.landmark} \n"                     
+            )
+        
         if len(tweet_text) > 279:
-            other_text = (
-                f"Reference id: {complaint.reference_id} \n"
-                f"Category: {complaint.category.name} \n"
-                f"Location: {complaint.district}, {complaint.state} "
-                f"https://www.google.com/maps?q={complaint.latitude},{complaint.longitude} \n"
-                f"Landmark: {complaint.landmark} \n"
-                f"More at: https://mykartavyam.info/view-complaint/{complaint.id} \n"
-                f"#kartavyam #kartavyam_{complaint.district} #kartavyam_{complaint.state}"
-            )
-            max_title_length = 279 - len(other_text) - 10  # 10 for "Title: ... "
-            
-            # truncate title if necessary
-            if max_title_length > 0:
-                truncated_title = complaint.title[:max_title_length] + "..."
-            else:
-                truncated_title = "..."
-            
-            # rebuilding tweet text
-            tweet_text = (
-                f"Reference id: {complaint.reference_id} \n"
-                f"Title: {truncated_title} \n"
-                f"Category: {complaint.category.name} \n"
-                f"Location: {complaint.district}, {complaint.state} "
-                f"https://www.google.com/maps?q={complaint.latitude},{complaint.longitude} \n"
-                f"Landmark: {complaint.landmark} \n"
-                f"More at: https://mykartavyam.info/view-complaint/{complaint.id} \n"
-                f"#kartavyam #kartavyam_{complaint.district} #kartavyam_{complaint.state}"
-            )
+                    tweet_text = tweet_text[:276] + "..."  
 
-        # post to Twitter if the complaint has an image
         if complaint.image and complaint.image.path:
             output = post_to_twitter(tweet_text, complaint.image.path)
             if output:
@@ -96,4 +64,3 @@ def post_to_social_media(complaint):
                 complaint.save()
     except Exception as e:
         print(f"Error posting to social media: {e}")
-    

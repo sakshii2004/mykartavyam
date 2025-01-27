@@ -20,6 +20,7 @@
         {% endif %}
         <p><b>Problem Description: </b></p>
         <p class="view-complaint-desc">{{complaint.description}}</p>
+        <p><b>Landmark: </b><span class="view-complaint-field">{{complaint.landmark}}</span></p>
         <p><b>Location: </b><span class="view-complaint-field">{{complaint.district}}, {{complaint.state}}</span>
             <a href="https://www.google.com/maps?q={{ complaint.latitude }},{{ complaint.longitude }}" target="_blank" class="view-complaint-map-link">
                 View on Google Maps

@@ -42,7 +42,7 @@
             </div>
 
             <div class="create-complaint-form-group">
-                <label for="district" class="create-complaint-label">District</label>
+                <label for="district" class="create-complaint-label">City / Town / Village</label>
                 <!--<input type="text" class="create-complaint-input">-->
                 {{ form.district|add_class:"create-complaint-input" }}
                 <p id="district-counter" class="character-counter">0/20 characters</p>
@@ -62,13 +62,13 @@
             </div>
 
             <div class="create-complaint-form-group">
-                <label for="image" class="create-complaint-label">Image</label>
+                <label for="image" class="create-complaint-label">Image (max size 3MB, only JPG/JPEG/PNG allowed)</label>
                 <!--<input type="file" class="create-complaint-input">-->
                 {{ form.image|add_class:"create-complaint-input" }}
             </div>
 
             <div class="create-complaint-form-group">
-                <label class="create-complaint-label">Location</label>
+                <label class="create-complaint-label">Location (Please post from the exact problem location.)</label>
                 <div class="create-complaint-location-fields">
                     <!--<button id="get-location" class="create-complaint-get-location-button">Get Location</button>-->
                     <button id="get-location" class="create-complaint-submit-button" style="width:45%">Get Location</button>

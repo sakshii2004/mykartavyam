@@ -34,6 +34,7 @@ urlpatterns = [
     path('terms-and-conditions/', views.tnc, name='tnc'),
     path('privacy-policy/', views.privacyPolicy, name='privacy-policy'),
     path('restricted-content/', views.restrictedContent, name='restricted_content'),
+    path('restricted-text/', views.restrictedText, name='restricted_text'),
     path('set-autoclose/', views.setAutoCloseTimePeriod, name='set_autoclose'),
     path('error/', views.error, name='error'),
     path('invalid-file-format/', views.invalidFileFormat, name='invalid_file_format'),
@@ -42,7 +43,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
     path('impact/', views.impact, name='impact'),
-
-
+    path('success-message/', views.complaintPostedSuccess, name='complaint-posted-success'),
+    path('complaint-already-approved/', views.complaintAlreadyApproved, name='complaint-already-approved'),
 ]
 

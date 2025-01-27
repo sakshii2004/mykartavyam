@@ -8,18 +8,18 @@
 <main class="home-main-container">
     <div class="home-search-bar" style="margin-bottom:0em;">
         <form method="GET" action = "{% url 'home' %}" class="home-form-group">
-            <input type="text" name = "r" placeholder="Search by Reference No..." class="home-input-text">
+            <input type="text" name = "r" placeholder="Ref ID" class="home-input-text">
             <button type="submit" class="home-search-button">Search</button>
         </form>
 
         <form method="GET" action="{% url 'home' %}" class="home-form-group">
-            <input type="text" name="q" placeholder="Search by Title..." class="home-input-text">
+            <input type="text" name="q" placeholder="Title" class="home-input-text">
             <button type="submit" class="home-search-button">Search</button>
         </form>
 
         <form method="GET" action = "{% url 'home' %}" class="home-form-group">
             <select name="c" class="home-dropdown-select">
-                <option value="">Search by Category...</option>
+                <option value="">Category</option>
                     {% for category in categories %}
                         <option value="{{ category.name }}">{{ category.name }}</option>
                     {% endfor %}
@@ -29,7 +29,7 @@
 
         <form method="GET" action = "{% url 'home' %}" class="home-form-group">
             <select name="status" class="home-dropdown-select">
-                <option value="">Search by Status...</option>
+                <option value="">Status</option>
                 <option value="OPEN">OPEN</option>
                 <option value="RESOLVED">RESOLVED</option>
                 <option value="AUTO_CLOSED">AUTO CLOSED</option>
@@ -39,11 +39,11 @@
         </form>
 
         <form method="GET" action = "{% url 'home' %}" class="home-form-group">
-            <input type="text" name = "d" placeholder="Search by District..." class="home-input-text">
+            <input type="text" name = "d" placeholder="City/Town/Village" class="home-input-text">
             <button type="submit" class="home-search-button">Search</button>
         </form>
         <form method="GET" action = "{% url 'home' %}" class="home-form-group">
-            <input type="text" name = "s" placeholder="Search by State..." class="home-input-text">
+            <input type="text" name = "s" placeholder="State" class="home-input-text">
             <button type="submit" class="home-search-button">Search</button>
         </form>
     </div>
@@ -63,7 +63,8 @@
                     <p class="home-complaint-info"><strong>Posted By:</strong> Concerned Citizen</p>
                 {% endif %}
                 <p class="home-complaint-info"><strong>Posted On:</strong> {{ complaint.created }}</p>
-                <p class="home-complaint-description"><strong>Description: </strong>{{ complaint.description|truncate_with_ellipsis:100 }}</p>
+                <p class="home-complaint-description"><strong>Description: </strong>{{ complaint.description|truncate_with_ellipsis:90 }}</p>
+                <p class="home-complaint-description"><strong>Landmark: </strong>{{ complaint.landmark|truncate_with_ellipsis:25 }}</p>
                 <p class="home-complaint-location">
                     <strong>Location:</strong> 
                     {% if complaint.latitude and complaint.longitude %}

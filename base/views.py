@@ -163,7 +163,7 @@ def createComplaint(request):
         if os.path.exists(watermarked_image_path):
             os.remove(watermarked_image_path)
 
-        return redirect('home')
+        return redirect('complaint-posted-success')
 
     return render(request, 'base/create_complaint.html', {'form': ComplaintForm()})
 
@@ -527,19 +527,20 @@ def home(request):
     complaints = Complaint.objects.exclude(status__in=['FORCE_CLOSED', 'AWAITING_APPROVAL'])
 
     if q:
-        complaints = Complaint.objects.filter(Q(title__icontains=q))
+        complaints = complaints.filter(Q(title__icontains=q))
     elif c:
-        complaints = Complaint.objects.filter(Q(category__name__icontains=c))
+        complaints = complaints.filter(Q(category__name__icontains=c))
     elif d:
-        complaints = Complaint.objects.filter(Q(district__icontains=d))
+        complaints = complaints.filter(Q(district__icontains=d))
     elif s:
-        complaints = Complaint.objects.filter(Q(state__icontains=s))
+        complaints = complaints.filter(Q(state__icontains=s))
     elif r:
-        complaints = Complaint.objects.filter(reference_id=r)
+        complaints = complaints.filter(reference_id=r)
     elif status:
-        complaints = Complaint.objects.filter(status=status)
-    else: 
-        complaints = Complaint.objects.all().order_by('-created')
+        complaints = complaints.filter(status=status)
+
+    # Default ordering when no filters are applied
+    complaints = complaints.order_by('-created')
     
     paginator = Paginator(complaints, 10) 
     page_number = request.GET.get('page') 
@@ -924,7 +925,7 @@ def approveComplaint(request, complaintID):
     complaint = Complaint.objects.get(id=complaintID)
     if request.method == 'POST':
         if complaint.status != 'AWAITING_APPROVAL':
-            return redirect(error)
+            return redirect('complaint-already-approved')
         complaint.status = 'OPEN'
         complaint.opened = timezone.now() 
         complaint.save()
@@ -1076,8 +1077,23 @@ def tnc(request):
 def privacyPolicy(request):
     return render(request, 'base/privacy_policy.html')
 
+def complaintPostedSuccess(request):
+    notif_header = "Success!"
+    notif_info = "Your complaint has been successfully submitted for approval."
+    context = {'notif_header':notif_header, 'notif_info':notif_info }
+    return render(request, 'base/common_notif.html', context)
+
+def complaintAlreadyApproved(request):
+    notif_header = "Complaint Already Approved"
+    notif_info = "It seems this complaint has already been approved. No further action is needed!"
+    context = {'notif_header': notif_header, 'notif_info': notif_info}
+    return render(request, 'base/common_notif.html', context)
+
 def restrictedContent(request):
     return render(request, 'base/restricted_content.html')
+
+def restrictedText(request):
+    return render(request, 'base/restricted_text.html')
 
 def error(request):
     return render(request, 'base/error.html')

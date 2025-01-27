@@ -7,8 +7,11 @@
             <a href="{% url 'home' %}" class="nav-link">HOME</a>
             <a href="{% url 'create-complaint' %}" class="nav-link">MAKE A COMPLAINT</a>
             <a href="{% url 'impact' %}" class="nav-link active-link">IMPACT</a>
-            {% if request.user.groups.all.0.name == 'admin' or request.user.groups.all.0.name == 'moderator' %}
+            {% if request.user.groups.all.0.name == 'admin' %}
                 <a href="{% url 'admin-panel' %}" class="nav-link active-link">ADMIN PANEL</a>
+            {% endif %}
+            {% if request.user.groups.all.0.name == 'moderator' %}
+                <a href="{% url 'admin-panel' %}" class="nav-link active-link">MODERATOR PANEL</a>
             {% endif %}
         </div>
         <div class="col col-1">

@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
     'base.apps.BaseConfig',
     'background_task',
-
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
