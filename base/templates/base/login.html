@@ -139,6 +139,12 @@
             return;                
         }
 
+        if (otp.length !== 6) {
+            messageElement.style.color = 'red';
+            messageElement.textContent = "OTP must be 6 digits long.";
+            return;
+        }
+
         fetch('/login/', {
             method: 'POST',
             headers: {

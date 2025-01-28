@@ -105,6 +105,12 @@
             return;
         }
 
+        if (email.length > 254) { // Max email length is 254 characters as per standards
+            messageElement.style.color = 'red';
+            messageElement.textContent = "Email address is too long.";
+            return;
+        }
+
         if (!name) {
             messageElement.style.color = 'red';
             messageElement.textContent = "Please enter your name.";
@@ -115,6 +121,12 @@
         if (!nameRegex.test(name)) {
             messageElement.style.color = 'red';
             messageElement.textContent = "Name should not contain numbers or special characters.";
+            return;
+        }
+
+        if (name.length > 100) { 
+            messageElement.style.color = 'red';
+            messageElement.textContent = "Name cannot be greater than 100 characters.";
             return;
         }
 
